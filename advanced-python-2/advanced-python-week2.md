@@ -1,4 +1,4 @@
-# 🚀 Advanced Python - Week 1 Plan  
+# 🚀 Advanced Python - Week 2 Plan  
 > Topics: Error Handling & Logging · Typing & Dataclasses  
 > Duration: 7 Days | Goal: Build solid foundations for scalable Python development
 

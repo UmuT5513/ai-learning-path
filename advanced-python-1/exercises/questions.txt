@@ -1,0 +1,2 @@
+1- instance nedir?
+2- instance methodlar ne işe yarar?
