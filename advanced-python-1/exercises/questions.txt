@@ -1,3 +1,4 @@
 1- instance nedir?
 2- instance methodlar ne işe yarar?
 3- getattr(obsject, name, default) nedir?
+4- abstraction, encapsulation, inheritance ve polymorphism hakkında bir kaç satır yaz.
