@@ -1,59 +1,107 @@
-# 🚀 Advanced Python - Week 1 Plan
+# Advanced Python 1 - Haftalık Program & İçerik Rehberi
 
-> **Topics:** OOP • Decorators • Iterators & Generators  
-> **Duration:** 7 Days  
-> **Goal:** Strengthen real-world Python fluency for AI/Data projects
+Bu repo, **advanced-python-1** dersi kapsamında gerçekleştirilen haftalık uygulamalar, mini projeler ve notlardan oluşmaktadır. Her gün belirli bir OOP (Nesne Yönelimli Programlama) veya Python ileri seviye konsepti üzerinde çalışılmıştır. Aşağıda haftalık plan ve klasör yapısına göre içeriklerin kısa açıklamaları ve dosya bağlantıları bulabilirsiniz.
 
 ---
 
-## 📅 Weekly Breakdown
+## 1. Gün – OOP Giriş: Sınıflar ve Nesneler
 
-| Day      | Topic                           | Description                                      | Practice/Projects                                                                                                         |
-|----------|---------------------------------|--------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| **Day 1**| 🟦 OOP Basics: Classes & Objects | Learn to define classes, attributes, methods     | [`class_attributes.py`](notes/Classes/class_attributes.py), [`class_constructor.py`](notes/Classes/class_constructor.py) <br> Proje: [`ShoppingCart.py`](mini-projects/OOP/ShoppingCart.py)           |
-| **Day 2**| 🟧 Inheritance & Polymorphism    | Inherit base classes, override methods           | [`child_class.py`](notes/Classes/child_class.py) <br> Proje: [`PolyDrive.py`](mini-projects/OOP/PolyDrive.py)            |
-| **Day 3**| 🟨 Abstraction & Encapsulation   | Use `@abstractmethod`, encapsulation techniques  | [`abstraction.md`](notes/OOP/abstraction.md), [`encapsulation.md`](notes/OOP/encapsulation.md) <br> [`properties.py`](notes/Classes/properties.py) |
-| **Day 4**| 🟩 Iterators                     | Implement `__iter__()`, `__next__()`, custom     | [`custom-iterators.py`](notes/iterators_and_generators/custom-iterators.py), [`iterable-iterator.py`](notes/iterators_and_generators/iterable-iterator.py) <br> Proje: [`EvenFlow.py`](mini-projects/Iterators_and_Generators/EvenFlow.py) |
-| **Day 5**| 🟥 Generators                    | Use `yield`, generator expressions               | [`generators.py`](notes/iterators_and_generators/generators.py) <br> Proje: [`UygulamaGenerators.py`](mini-projects/Iterators_and_Generators/UygulamaGenerators.py), [`PrimeQuest.py`](mini-projects/Iterators_and_Generators/PrimeQuest.py) |
-| **Day 6**| 🟪 Decorators                    | Learn function decorators, timer/logger examples | [`decorator_functions.py`](notes/Decorators/decorator_functions.py), [`decorator_parameters.py`](notes/Decorators/decorator_parameters.py) <br> Proje: [`ErrorLogger.py`](mini-projects/Decorators/ErrorLogger.py), [`TimerDecorator.py`](mini-projects/Decorators/TimerDecorator.py) |
-| **Day 7**| 🏁 Capstone Project              | Combine all concepts in a practical project      | [`Capstone-Project/`](Capstone-Project/) <br> Bütün hafta uygulanan kavramlar tek projede birleştirildi.                 |
-
----
-
-## 🛠️ Mini Projects ve Uygulamalar
-
-- **OOP:**  
-  - [`ShoppingCart.py`](mini-projects/OOP/ShoppingCart.py) : Sınıflar, nesneler, metodlar ile alışveriş sepeti uygulaması  
-  - [`PolyDrive.py`](mini-projects/OOP/PolyDrive.py) : Inheritance ve polymorphism örneği, farklı araç sınıfları
-
-- **Iterators & Generators:**  
-  - [`EvenFlow.py`](mini-projects/Iterators_and_Generators/EvenFlow.py) : Kendi iterator sınıfını yazma  
-  - [`UygulamaGenerators.py`](mini-projects/Iterators_and_Generators/UygulamaGenerators.py), [`PrimeQuest.py`](mini-projects/Iterators_and_Generators/PrimeQuest.py) : Generator kullanımı
-
-- **Decorators:**  
-  - [`ErrorLogger.py`](mini-projects/Decorators/ErrorLogger.py) : Hata yakalayan fonksiyon dekoratörü  
-  - [`TimerDecorator.py`](mini-projects/Decorators/TimerDecorator.py) : Fonksiyonların çalışma süresini ölçen dekoratör
-
-- **Capstone Project:**  
-  - Hafta boyunca öğrenilen tüm konseptleri bir araya getiren kapsamlı proje. OOP, iterator, generator, dekoratörler bir arada.
+- **Konu:** Sınıflar (class), nesneler (object), temel yapıcı fonksiyonlar ve metodlar.
+- **Amaç:** Nesne tabanlı programlamanın temellerini öğrenmek.
+- **Notlar ve Dosyalar:**
+  - [`notes/Classes/class_attributes.py`](notes/Classes/class_attributes.py)
+  - [`notes/Classes/class_constructor.py`](notes/Classes/class_constructor.py)
+  - [`notes/Classes/class_method.py`](notes/Classes/class_method.py)
+  - [`notes/Classes/instance_methods.py`](notes/Classes/instance_methods.py)
+- **Mini Proje:**
+  - [`mini-projects/OOP/ShoppingCart.py`](mini-projects/OOP/ShoppingCart.py)
 
 ---
 
-## 📑 Notlar & Kaynaklar
+## 2. Gün – OOP İleri: Inheritance & Polymorphism
 
-- Teorik açıklamalar ve örnek kodlar: `notes/` klasörü altında  
-- Giriş ve özet: [`advanced-python-week1.md`](advanced-python-week1.md)
-- Ek veri dosyaları: `sample.csv`, `sample.json`, `sample.txt`  
-- Geliştirici notları ve ilerleme için: `access.log`, proje klasörleri
+- **Konu:** Kalıtım (inheritance) ve çok biçimlilik (polymorphism).
+- **Amaç:** Sınıflar arası ilişkiler ve polimorfik davranışları uygulama.
+- **Notlar ve Dosyalar:**
+  - [`notes/OOP/inheritance.md`](notes/OOP/inheritance.md)
+  - [`notes/OOP/polymorphism.md`](notes/OOP/polymorphism.md)
+  - [`notes/Classes/child_class.py`](notes/Classes/child_class.py)
+- **Mini Proje:**
+  - [`mini-projects/OOP/PolyDrive.py`](mini-projects/OOP/PolyDrive.py)
+
+---
+
+## 3. Gün – OOP Derin: Abstraction & Encapsulation
+
+- **Konu:** Soyutlama (abstraction) ve kapsülleme (encapsulation).
+- **Amaç:** Veri gizliliği ve arayüz oluşturma.
+- **Notlar ve Dosyalar:**
+  - [`notes/OOP/abstraction.md`](notes/OOP/abstraction.md)
+  - [`notes/OOP/encapsulation.md`](notes/OOP/encapsulation.md)
+  - [`notes/Classes/properties.py`](notes/Classes/properties.py)
+  - [`notes/Classes/meta_class.py`](notes/Classes/meta_class.py)
+
+---
+
+## 4. Gün – Iterators
+
+- **Konu:** İteratörler, iterable ve iterator kavramları, özel iterator sınıfları.
+- **Amaç:** Python’da tekrarlanabilir veri yapıları oluşturmak ve yönetmek.
+- **Notlar ve Dosyalar:**
+  - [`notes/iterators_and_generators/custom-iterators.py`](notes/iterators_and_generators/custom-iterators.py)
+  - [`notes/iterators_and_generators/iterable-iterator.py`](notes/iterators_and_generators/iterable-iterator.py)
+- **Mini Proje:**
+  - [`mini-projects/Iterators_and_Generators/EvenFlow.py`](mini-projects/Iterators_and_Generators/EvenFlow.py)
+
+---
+
+## 5. Gün – Generators
+
+- **Konu:** Generator fonksiyonlar, generator ifadeleri, yield anahtar kelimesi.
+- **Amaç:** Hafızada verimli veri üretimi ve kullanımı.
+- **Notlar ve Dosyalar:**
+  - [`notes/iterators_and_generators/generators.py`](notes/iterators_and_generators/generators.py)
+- **Mini Proje:**
+  - [`mini-projects/Iterators_and_Generators/UygulamaGenerators.py`](mini-projects/Iterators_and_Generators/UygulamaGenerators.py)
+  - [`mini-projects/Iterators_and_Generators/PrimeQuest.py`](mini-projects/Iterators_and_Generators/PrimeQuest.py)
+
+---
+
+## 6. Gün – Decorators
+
+- **Konu:** Fonksiyon dekoratörleri, parametreli dekoratörler, class decorator’lar.
+- **Amaç:** Fonksiyonel programlama ile kod tekrarını azaltmak, dinamik fonksiyonellik eklemek.
+- **Notlar ve Dosyalar:**
+  - [`notes/Decorators/decorator_functions.py`](notes/Decorators/decorator_functions.py)
+  - [`notes/Decorators/decorator_parameters.py`](notes/Decorators/decorator_parameters.py)
+  - [`notes/Decorators/decorators_that_take_parameters.py`](notes/Decorators/decorators_that_take_parameters.py)
+- **Mini Proje:**
+  - [`mini-projects/Decorators/ErrorLogger.py`](mini-projects/Decorators/ErrorLogger.py)
+  - [`mini-projects/Decorators/TimerDecorator.py`](mini-projects/Decorators/TimerDecorator.py)
+
+---
+
+## 7. Gün – Capstone Project
+
+- **Konu:** Hafta boyunca öğrenilen kavramları kapsayan mini bitirme projesi.
+- **Amaç:** OOP, Iterator, Generator ve Decorator konularını bir araya getirerek bütünsel bir uygulama geliştirmek.
+- **Dosya ve Klasör:**
+  - [`Capstone-Project/`](Capstone-Project/)
+
+---
+
+## Ekstra Notlar
+
+- Her konuya ait ek örnekler ve özet notlar: `notes/` klasöründe yer almaktadır.
+- Dosyalar arasında bağlantı kurmak için örnek input dosyaları: `sample.csv`, `sample.json`, `sample.txt`
+- Haftalık özet: [`advanced-python-week1.md`](advanced-python-week1.md)
 
 ---
 
 ### Kullanım
 
-Her günün içeriğini klasörlerden inceleyerek ya da çalıştırarak öğrenebilirsin. Kodlarda bolca yorum ve açıklama mevcut.  
-Projeleri test etmek için ilgili dosyayı çalıştırabilirsin.
+Klasörlerdeki Python dosyalarını inceleyerek veya çalıştırarak konuları uygulamalı öğrenebilirsiniz. Her dosyada açıklayıcı yorum satırları ve örnek kullanım şekilleri eklenmiştir.
 
 ---
 
-> Bu haftalık program, ileri Python yetkinliğini gerçek dünyada kullanabilmek için hazırlandı. Her güne özel örnekler ve sonunda büyük birleştirici proje ile maksimum öğrenme hedeflenmiştir.
-
+> Bu program, ileri seviye Python ve OOP konseptlerini hem teorik hem pratik uygulamalarla pekiştirmek için hazırlanmıştır.
