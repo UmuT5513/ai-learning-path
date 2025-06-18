@@ -1,0 +1,48 @@
+Student:
+    __init__ : self, student_name, grade
+        self._grade = grade
+        self._student_name = student_name
+
+    __str__ : class bilgisi return eder
+    
+    @property
+    grade():
+        return self._grade
+    @grade.setter
+    grade(self.value):
+        if value<0 and value>0:
+            self._grade = value
+        else:
+            raise ValueError("not 0-100 arasında olmalı.")
+
+    @property
+    name():
+        return self._student_name
+    @name.setter
+    name(value):
+        if type(value) = str:
+            self._student_name = value
+        else:
+            raise TypeError
+
+
+Course:
+    __init__ : course_name(onlinecourse or labcourse)
+    __str__ : class bilgisi return eder.
+    not_hesapla() : abstract class, miras alınan classlar tarafından override edilecek (polymorphism)
+
+OnlineCourse:
+    not_hesapla() : derse_katılım + sınav_sonucu
+
+LabCourse:
+    not_hesapla() : derse_katılım + lab_odevi
+
+
+ManagementSystem:
+    generator_grades()
+    iterator_students()
+
+
+
+generator_grades(): Elindeki notları tek tek yield edecek bir generator fonksiyon.
+iterator_students(): Öğrenci listesi üzerinde dolaşmanı sağlayacak özel bir iterator (veya iter ve next ile iterable yapabilirsin).

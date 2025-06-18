@@ -2,8 +2,7 @@
 
 def counter(max):
     sayi = 1
-
-
+    
     while sayi <= max:
         yield sayi
         sayi += 1
