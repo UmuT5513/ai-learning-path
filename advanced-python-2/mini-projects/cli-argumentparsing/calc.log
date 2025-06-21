@@ -1,0 +1,24 @@
+ERROR - root - bölünen 0 olamaz
+Traceback (most recent call last):
+  File "C:\Users\Umut\Desktop\ai-learning-path\advanced-python-2\mini-projects\cli-argumentparsing\calc.py", line 22, in <module>
+    print(a/b)
+          ~^~
+ZeroDivisionError: float division by zero
+2025-06-21 19:39:49 - ERROR - root - bölünen 0 olamaz
+Traceback (most recent call last):
+  File "C:\Users\Umut\Desktop\ai-learning-path\advanced-python-2\mini-projects\cli-argumentparsing\calc.py", line 22, in <module>
+    print(a/b)
+          ~^~
+ZeroDivisionError: float division by zero
+2025-06-21 19:40:19 - ERROR - root - "bölünen 0 olamaz"
+Traceback (most recent call last):
+  File "C:\Users\Umut\Desktop\ai-learning-path\advanced-python-2\mini-projects\cli-argumentparsing\calc.py", line 22, in <module>
+    print(a/b)
+          ~^~
+ZeroDivisionError: float division by zero
+2025-06-21 19:43:10 - ERROR - root - bölünen 0 olamaz
+Traceback (most recent call last):
+  File "C:\Users\Umut\Desktop\ai-learning-path\advanced-python-2\mini-projects\cli-argumentparsing\calc.py", line 23, in <module>
+    print(a/b)
+          ~^~
+ZeroDivisionError: float division by zero

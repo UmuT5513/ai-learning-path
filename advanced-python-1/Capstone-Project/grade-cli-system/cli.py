@@ -72,7 +72,7 @@ def handle_add_course(args):
         OnlineCourse.create_course(name_katilim_note) #not burada sinav_notu
         print("Sisteme bir Çevrimiçi Kurs Eklendi")
     if type == "Lab":
-        LabCourse.create_course(name_katilim_note) #note burada lab_notu
+        LabCourse.create_course(name_katilim_note) #not burada lab_notu
         print("Sisteme bir Laboratuvar Kursu Eklendi")
 
 def handle_assign_course(args):
@@ -92,20 +92,32 @@ def handle_assign_course(args):
 
 def handle_add_grade(args):
     """
-    Komut satırından --id, --course, --katilim, --note parametreleri alınır.
-    Alınan parametreler ile ilgili öğrencinin notu güncellenir.
-    Güncelleme işlemi başarılıysa "Not Ekleme Başarılı" mesajı yazdırılır.
+    Handles adding a grade for a student. 
+
+    Parameters are taken from the command line:
+    --id: Student ID
+    --course: Course name
+    --katilim: Participation grade (integer between 0-100)
+    --note: Exam or lab grade (integer between 0-100)
+
+    Updates the student's grade for the specified course. 
+    If successful, prints a success message.
     """
     
+    # Extract parameters from command line arguments
     ogr_id = args.id
     course_name = args.course
-    katilim = args.katilim # burada not eklerken int türünde 0-100 arası not
-    note = args.note # int türünde 0-100 arası not
+    katilim = args.katilim  # Participation grade
+    note = args.note        # Exam or lab grade
 
+    # Find the student by id
     student = next((s for s in Student.student_list if s.id == ogr_id), None)
+    # Find the course by name
     course = next((c for c in Course.course_list if c.name == course_name), None)
 
+    # Add the grade to the student
     student.add_grade(course, katilim, note)
+    # Print success message
     print("Not Ekleme Başarılı")
 
 

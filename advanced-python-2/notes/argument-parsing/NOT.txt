@@ -1,0 +1,5 @@
+argument parsing python da 2 yolu var:
+biri c tabanlı getopt modulü ile 
+diğeri argparse modülü ile
+
+command-line (CLI) tam olarak ne oluyor bilmiyorum.
