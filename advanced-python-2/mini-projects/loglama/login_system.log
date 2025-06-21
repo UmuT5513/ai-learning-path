@@ -1,0 +1,36 @@
+2025-06-21 16:01 - INFO - Kayıt başarılı
+2025-06-21 16:01 - WARNING - username='umut': Kullanıcı kayıtlı değil.
+2025-06-21 16:02 - INFO - Kayıt başarılı
+2025-06-21 16:08 - INFO - Kayıt başarılı
+2025-06-21 16:09 - INFO - Kayıt başarılı
+2025-06-21 16:09 - INFO - Kayıt başarılı
+2025-06-21 16:09 - INFO - Giriş başarılı
+2025-06-21 16:10 - INFO - Kayıt başarılı
+2025-06-21 16:11 - INFO - Kayıt başarılı
+2025-06-21 16:11 - WARNING - username='umut': Kullanıcı zaten kayıtlı.
+2025-06-21 16:11 - ERROR - password='123' Zayıf parola. Parola 6 haneden kısa olamaz.
+NoneType: None
+2025-06-21 16:12 - ERROR - password='123' Zayıf parola. Parola 6 haneden kısa olamaz.
+NoneType: None
+2025-06-21 16:13 - INFO - Giriş başarılı
+2025-06-21 16:13 - WARNING - username='memet': Kullanıcı kayıtlı değil.
+2025-06-21 16:20 - WARNING - username='umut': Kullanıcı kayıtlı değil.
+2025-06-21 16:20 - WARNING - username='umut': Kullanıcı kayıtlı değil.
+2025-06-21 16:21 - WARNING - username='umut': Kullanıcı kayıtlı değil.
+2025-06-21 16:22 - INFO - Kayıt başarılı
+2025-06-21 16:22 - WARNING - password='123456789' parola yanlış
+2025-06-21 16:23 - WARNING - username='umut': Kullanıcı zaten kayıtlı.
+2025-06-21 16:23 - WARNING - password='123456789' parola yanlış
+2025-06-21 16:23 - WARNING - password='12345678999098765' parola yanlış
+2025-06-21 16:24 - WARNING - password='1234567890898765432' parola yanlış
+2025-06-21 16:24 - WARNING - password='123245647897765436768' parola yanlış
+2025-06-21 16:25 - WARNING - username='umut': Kullanıcı zaten kayıtlı.
+2025-06-21 16:25 - WARNING - password='12344567' parola yanlış
+2025-06-21 16:25 - WARNING - password='123435678' parola yanlış
+2025-06-21 16:26 - WARNING - username='umut 123453678690': Kullanıcı kayıtlı değil.
+2025-06-21 16:26 - WARNING - password='12435465758690' parola yanlış
+2025-06-21 16:26 - WARNING - password='124354657897088765' parola yanlış
+2025-06-21 16:26 - WARNING - username='umut ': Kullanıcı kayıtlı değil.
+2025-06-21 16:27 - INFO - Giriş başarılı
+2025-06-21 16:37 - WARNING - username='l': Kullanıcı kayıtlı değil.
+2025-06-21 16:43 - INFO - Kayıt başarılı
