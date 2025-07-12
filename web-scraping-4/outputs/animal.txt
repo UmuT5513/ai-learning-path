@@ -1,0 +1,15 @@
+Book Name: Majestic King
+Description: The lion is a large carnivorous mammal. It is known for its majestic appearance and is often referred to as the "king of the jungle."
+
+Book Name: Trunked Giant
+Description: Elephants are the largest land animals. They are known for their long trunks and large ears.
+
+Book Name: Playful Communicator
+Description: Dolphins are highly intelligent marine mammals known for their playful behavior and communication skills.
+
+Book Name: Colorful Metamorphosis
+Description: Butterflies are beautiful insects with colorful wings. They undergo a process called metamorphosis from caterpillar to butterfly.
+
+Book Name: Tuxedoed Adaptation
+Description: Penguins are flightless birds that are well-adapted to life in the water. They are known for their tuxedo-like black and white plumage.
+
