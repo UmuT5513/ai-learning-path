@@ -46,7 +46,7 @@ dict['stock'] = in_stocks
 try:
     import pandas as pd
     df = pd.DataFrame.from_dict(dict,orient='columns')
-    df.to_csv('outputs/books.csv')
+    df.to_csv('outputs/books.csv', index=False)
 except Exception as e:
     print(f"{e} : {e.__str__}")
 
