@@ -12,8 +12,10 @@ NAMES = []
 PRICES = []
 DESCRIPTIONS = []
 TAXES = []
-PRICES_WITH_TAXES = []
+EXCLUDE_TAX_PRICES = []
 AVALIABILITY = []
+NUMBER_OF_REVIEWS = []
+UPCS = []
 
 URL = "https://books.toscrape.com/"
 
@@ -60,7 +62,7 @@ for cat_index in range(len(categories)):
 
             try:
                 book_name = soup.find('h1') # texti alınacak
-                book_price = book_name.next_sibling #texti alınacak
+                book_price = soup.find('p', class_='price_color') #texti alınacak
                 product_desc = soup.find('div', id='product_description').find_next_sibling('p') #texti alınacak
                 NAMES.append(book_name.text)
                 PRICES.append(book_price.text)
@@ -80,16 +82,24 @@ for cat_index in range(len(categories)):
                         Tax = th.find_next_sibling('td').text
                         TAXES.append(Tax)
                     if "excl" in th.text:
-                        price_tax = th.find_next_sibling('td').text
-                        PRICES_WITH_TAXES.append(price_tax)
+                        exclude_tax_price = th.find_next_sibling('td').text
+                        EXCLUDE_TAX_PRICES.append(exclude_tax_price)
                     if th.text == 'Availability':
                         avaliability = th.find_next_sibling('td').text
                         AVALIABILITY.append(avaliability)
+                    if th.text == 'Number of reviews':
+                        number_of_reviews = th.find_next_sibling('td').text
+                        NUMBER_OF_REVIEWS.append(number_of_reviews)
+                    if th.text == 'UPC':
+                        upc = th.find_next_sibling('td').text
+                        UPCS.append(upc)
+                    
             except Exception as e:
                 print(e)
                 TAXES.append("")
-                PRICES_WITH_TAXES.append("")
+                EXCLUDE_TAX_PRICES.append("") 
                 AVALIABILITY.append("")
+                NUMBER_OF_REVIEWS.append("")
     
             driver.back()
             time.sleep(2)
@@ -112,14 +122,16 @@ dict = {
     'price': PRICES,
     'description': DESCRIPTIONS,
     'tax': TAXES,
-    'price_with_tax': PRICES_WITH_TAXES,
-    'avalibility': AVALIABILITY}
+    'price_with_tax': EXCLUDE_TAX_PRICES,
+    'avalibility': AVALIABILITY,
+    'number_of_reviews': NUMBER_OF_REVIEWS,
+    'upc': UPCS}
 
 print(len(NAMES))
 print(len(PRICES))
 print(len(DESCRIPTIONS))
 print(len(TAXES))
-print(len(PRICES_WITH_TAXES))
+print(len(EXCLUDE_TAX_PRICES))
 print(len(AVALIABILITY))
 
 try:
@@ -127,10 +139,10 @@ try:
 except Exception as e:
     print(e)
     # After scraping each book (inside the for book in books_detay_links loop)
-    if len(NAMES) != len(PRICES) or len(NAMES) != len(DESCRIPTIONS) or len(NAMES) != len(TAXES) or len(NAMES) != len(PRICES_WITH_TAXES) or len(NAMES) != len(AVALIABILITY):
+    if len(NAMES) != len(PRICES) or len(NAMES) != len(DESCRIPTIONS) or len(NAMES) != len(TAXES) or len(NAMES) != len(EXCLUDE_TAX_PRICES) or len(NAMES) != len(AVALIABILITY):
         # Fill missing values with empty strings
-        max_len = max(len(NAMES), len(PRICES), len(DESCRIPTIONS), len(TAXES), len(PRICES_WITH_TAXES), len(AVALIABILITY))
-        for lst in [NAMES, PRICES, DESCRIPTIONS, TAXES, PRICES_WITH_TAXES, AVALIABILITY]:
+        max_len = max(len(NAMES), len(PRICES), len(DESCRIPTIONS), len(TAXES), len(EXCLUDE_TAX_PRICES), len(AVALIABILITY))
+        for lst in [NAMES, PRICES, DESCRIPTIONS, TAXES, EXCLUDE_TAX_PRICES, AVALIABILITY]:
             while len(lst) < max_len:
                 lst.append("")
     pd.DataFrame(dict).to_csv('C:/Users/Umut/Desktop/ai-learning-path/web-scraping-4/outputs/miuul_webscraping_capstone.csv', index=False)
