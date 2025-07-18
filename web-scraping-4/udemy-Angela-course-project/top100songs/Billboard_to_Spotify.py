@@ -38,7 +38,6 @@ def get_songs(header, url):
     songs_list = [f"{i}.{song.get_text(strip=True)}" for i, song in enumerate(songs)]
     return songs_list
 
-
 def spotify(client_id, client_secret):   
     """
     Spotify API kimlik doğrulama ve oturum açma
