@@ -51,8 +51,8 @@ def main():
     if price < th_price:
         #send telegram message
         
-        token = "7890217994:AAHD-8Q8BCknBLC-86gg7m2vojoYgEfsSgk"
-        chat_id = "1270406331"
+        token = ""
+        chat_id = ""
         message = f"{title} ürünü *{price} TL* fiyatına düştü! ({datetime.datetime.now().strftime('%Y-%m-%d')})"
         send_telegram_message(token=token, chat_id=chat_id, message=message)
         print("mesaj gönderildi")
