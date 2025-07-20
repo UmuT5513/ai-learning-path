@@ -36,7 +36,7 @@ def main():
     cookie = driver.find_element(By.XPATH,'//*[@id="bigCookie"]')
 
     start = time.time()
-    timeout = start + 60   # 60 seconds from now
+    timeout = start + 60*5   # 5 min from now
     next_update = start + 5
     while time.time() <= timeout:
         cookie.click()
@@ -50,7 +50,7 @@ def main():
             if affordables:
                 to_buy = max(affordables, key=affordables.get)
                 print(f"[INFO] Satın alınacak ürün indexi: {to_buy}, fiyatı: {affordables[to_buy]}")
-                buy_button = driver.find_element(By.ID, f"productPrice{to_buy}")
+                buy_button = driver.find_element(By.ID, f"product{to_buy}")
                 if "enabled" in driver.find_element(By.XPATH,"//*[@id='productPrice0']/ancestor::*[2]").get_attribute("class"):
                     print(f"[INFO] Ürün {to_buy} satın alındı!")
                     buy_button.click()
@@ -61,8 +61,8 @@ def main():
             print(f"[INFO] --- 5 saniyelik güncelleme tamamlandı ---\n")
             next_update += 5
 
+    print(per_second)
     print("[INFO] Program sona erdi, tarayıcı kapatılıyor.")
-    driver.quit()
 
 
 if __name__=="__main__":
