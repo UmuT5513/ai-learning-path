@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Temel ve Orta Seviye Notları</title>
+    <style>
+        @media print {
+            body { font-size: 12pt; line-height: 1.4; }
+            .no-print { display: none; }
+            h1 { page-break-before: avoid; }
+            .chapter { page-break-inside: avoid; margin-bottom: 20px; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .chapter {
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-line;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+        
+        code {
+            background: #e9ecef;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">PDF Olarak Yazdır</button>
+    
+    <h1>Git Temel ve Orta Seviye Notları</h1>
+    
+    <div class="chapter">
+        <h2>1. Git Kurulumu ve Konfigürasyon</h2>
+        <div class="content">Windows: https://git-scm.com/download/win adresinden .exe dosyasını indirip kur.
+MacOS: Terminal'de git --version yaz, yoksa yükleme talimatı çıkar.
+Linux (Ubuntu): sudo apt update && sudo apt install git
+
+Kurulumdan sonra:
+git config --global user.name "Senin İsmin"
+git config --global user.email "mail@ornek.com"</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>2. Git Nedir ve Neden Kullanılır?</h2>
+        <div class="content">Git bir versiyon kontrol sistemidir. Kod değişikliklerini kayıt altına alır, proje geçmişini yönetir, hatalı değişiklikleri geri almayı ve ekip çalışmasını kolaylaştırır.</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>3. Terminal/Command Prompt Temelleri</h2>
+        <div class="content">cd klasör_adı   # Klasöre gitmek
+ls / dir            # Dosya ve klasörleri görmek
+pwd                 # Bulunduğun konumu görmek
+mkdir yeni_klasor   # Klasör oluşturmak</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>4. Basit Git Projesi Başlatmak</h2>
+        <div class="content">mkdir ilk-git-projem
+cd ilk-git-projem
+git init
+echo "Bu benim ilk git projem." > readme.txt
+git status
+git add readme.txt
+git commit -m "İlk dosyamı ekledim"
+git log</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>5. Branch (Dal) Kullanımı</h2>
+        <div class="content">git branch              # Dalları listele
+git branch ozellik1      # Yeni dal oluştur
+git checkout ozellik1    # Dalı değiştir
+git add .
+git commit -m "Dalda değişiklik"
+git checkout main
+git merge ozellik1       # Dalı ana dala birleştir</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>6. Push/Pull ve GitHub Kullanımı</h2>
+        <div class="content">GitHub'da yeni repo oluştur.
+git remote add origin https://github.com/KULLANICIADIN/REPOADI.git
+git push -u origin main  # İlk push
+git pull origin main     # Uzak depodan çekmek</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>7. Commit, Undo, Reset, Revert</h2>
+        <div class="content">Henüz commit edilmemiş dosyayı eski haline döndürmek: 
+git checkout -- dosya.txt
+
+Staged dosyayı geri almak: 
+git reset HEAD dosya.txt
+
+Son commit'i silmek: 
+git reset --soft HEAD~1 (veya --hard ile tamamen)
+
+Push'lu commit'i geri almak: 
+git revert &lt;commit_kodu&gt;</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>8. Conflict (Çakışma) ve Çözümü</h2>
+        <div class="content">İki dalda aynı satırda değişiklik yapınca merge'de conflict oluşur.
+Çakışan dosyada:
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+senin değişikliğin
+=======
+diğer branch'teki değişiklik
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; yedek
+
+Çözüm: Satırları düzenle, işaretleri sil. 
+git add dosya.txt ve git commit -m "Conflict çözüldü"</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>9. .gitignore Kullanımı</h2>
+        <div class="content">Proje kökünde .gitignore dosyası oluştur.
+.gitignore'a eklemek için:
+*.log
+.env
+node_modules/
+
+.gitignore sadece eklenmemiş dosyalar için çalışır.</div>
+    </div>
+    
+    <div class="chapter">
+        <h2>10. .env Dosyası ve Güvenliği</h2>
+        <div class="content">.env dosyası içinde gizli bilgiler saklanır.
+.gitignore dosyasına .env satırı ekle:
+.env
+
+Daha önce eklediysen: 
+git rm --cached .env && git commit -m ".env dosyası ignorelandı"
+
+Başka geliştiriciler için .env.example dosyası bırakılabilir.</div>
+    </div>
+    
+    <script>
+        // Sayfa yüklendiğinde print dialog'u otomatik açmak için (isteğe bağlı)
+        // window.addEventListener('load', function() {
+        //     setTimeout(() => window.print(), 1000);
+        // });
+    </script>
+</body>
+</html>
