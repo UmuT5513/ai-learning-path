@@ -63,6 +63,8 @@ class Investor:
     age:int
     cash:float = field(init=False)
 
+i1 = Investor(name="me", age=80) #cash i başlatmaya gerek yok 
+
 
 
 
