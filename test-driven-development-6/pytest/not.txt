@@ -1,0 +1,17 @@
+Normalde unittest de testcase ler yürütülmeden setUp, yürütüldükten sonra
+tearDown metodları çalışıyorken yani bir test_*.py dosyasının yürütülme sırası 
+setUp->test_* methodları->tearDown iken pytest.fixture da aynıdır lakin Arrange aşaması
+fixture ile test_* case lerin içinde tanımlanmadan setUp u test_* case lere parametre olarak 
+verilerek sağlanır. (örnek için bk. test_cart_fixture.py )
+
+`fixture.mark` ile test_* case ler gruplanır ve test edilmek istenen grup pytes -m pytest.fixture den sonraki kısım
+(örn. fixture.mark.regression ise "python -m regression") şeklinde sadece regression a ait olan test_* method(case) 
+lari test edilir/yürütülür.
+
+hap bilgiler:
+-v (verbose) eki daha çok detay verir.
+-vv daha çok detay.
+-vvv daha daha çok detay.
+
+built-in pytest.marks.blabla:
+pytest.mark.skip, pytest.mark.xfail
