@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Path, Query
 from models import User, UserOut
+from typing import Optional
 
 app = FastAPI()
 
@@ -49,6 +50,12 @@ def delete(user_id:int):
     if deleted:
         user_db.pop(deleted.id - 1)
         return deleted
+    
+@app.get("/users/{user_id}/search")
+def filter(user_id:int = Path(title="The ID of the user to get"), 
+           age: Optional[int] = Query(description="User's age to filter", gt=0)
+           ):
+    return {"kullanıcı ID": user_id, "yaşa göre filtreleme": age} 
     
 
 if __name__ == "__main__":
