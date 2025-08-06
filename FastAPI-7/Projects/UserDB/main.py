@@ -9,7 +9,7 @@ user_db: list[UserOut] = [
     UserOut(id=3, name="Mahmut", age=45, email="mahmut@example.com"),
     UserOut(id=4, name="Can", age=5, email="can@example.com"),
 ]
-@app.get("/users", response_model=list[UserOut])
+@app.get("/", response_model=list[UserOut])
 def get_users():
     return user_db
 
@@ -32,3 +32,26 @@ def create_user(user: User):
     new_user = UserOut(id=new_id, **user.model_dump())
     user_db.append(new_user)
     return new_user
+
+
+@app.put("/users/{user_id}", response_model=UserOut)
+def update(user_id: int, user: User):
+    item = next(filter(lambda u: u.id == user_id, user_db), None)
+    if item:
+        item.name = user.name
+        item.age = user.age
+        item.email = user.email
+        return item
+    
+@app.delete("/users/{user_id}")
+def delete(user_id:int):
+    deleted = next(filter(lambda u: u.id == user_id, user_db), None)
+    if deleted:
+        user_db.pop(deleted.id - 1)
+        return deleted
+    
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+    
