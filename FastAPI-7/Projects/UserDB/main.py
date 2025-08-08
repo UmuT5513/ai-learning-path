@@ -55,6 +55,8 @@ def delete(user_id:int):
 def filter(user_id:int = Path(title="The ID of the user to get"), 
            age: Optional[int] = Query(description="User's age to filter", gt=0)
            ):
+    
+    #normalde burada db den ilgili kullanıcı getirtilir. biz şuan sadece return ediyoruz.
     return {"kullanıcı ID": user_id, "yaşa göre filtreleme": age} 
     
 
