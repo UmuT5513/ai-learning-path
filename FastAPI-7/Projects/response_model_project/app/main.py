@@ -5,7 +5,7 @@ from utils import fake_hash_password
 app = FastAPI()
 
 fake_user_db={}
-fake_item_db=[]
+fake_item_db=[] #item lar dict olarak tutulur
 item_id_counter=1
 
 @app.post("/users", response_model=BaseUser, response_model_exclude_none=True)
