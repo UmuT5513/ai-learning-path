@@ -18,8 +18,8 @@ class Priority(int, Enum):
 class TaskBase(BaseModel):
     title:str = Field(min_length=1,max_length=50, description="Task baslığı")
     description:str = Field(default=None, max_length=200)
-    status:TaskStatus = Field(default_factory=TaskStatus.PENDING, description="Task durumu")
-    priority:Priority = Field(default_factory=Priority.MEDIUM, description="öncelik durumu")
+    status:TaskStatus = Field(default=TaskStatus.PENDING, description="Task durumu")
+    priority:Priority = Field(default=Priority.MEDIUM, description="öncelik durumu")
 
 
 class TaskCreate(TaskBase):
@@ -28,7 +28,7 @@ class TaskCreate(TaskBase):
 class Task(TaskBase): # aslında bu TaskResponse, yani kullanıcıya gösterdiğim Task bilgileri
     """API response için schema"""
     id:int
-    created_at: datetime = Field(default=datetime.now())
+    created_at: datetime = Field(default_factory=datetime.now())
     updated_at: datetime | None = Field(default=None)
 
 

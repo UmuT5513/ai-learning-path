@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from schemas import Task, TaskCreate, TaskUpdate
+from schemas import Task, TaskCreate, TaskUpdate, TaskStatus, Priority
 from datetime import datetime
 
 app = FastAPI()
@@ -21,7 +21,8 @@ def create_task(task: TaskCreate)->Task:
     
     global id_counter
     task_dict = task.model_dump()
-    task_dict["id"] = id_counter #yeni id key ekledim. value sını id_counter.
+    task_dict["id"] = id_counter #yeni id key ekledim. value sını id_counter. 
+    task_dict["updated_at"] = None  
     id_counter += 1
     tasks.append(task_dict) 
     return task_dict # Task sınıfını return eder.
@@ -106,6 +107,19 @@ def delete_task(task_id:int):
                     
     raise HTTPException(status_code=404, detail="Task bulunamadı, girdiğiniz task_id yi kontrol edin!")
 
+
+# quick action endpoints
+@app.patch("/tasks/{task_id}/complete")
+def complete(task_id:int)->Task:
+    return update_task(task_id, TaskUpdate(status=TaskStatus.COMPLETED))
+
+@app.patch("/tasks/{task_id}/start")
+def start(task_id:int)->Task:
+    return update_task(task_id, TaskUpdate(status=TaskStatus.IN_PROGRESS))
+
+@app.patch("/tasks/{task_id}/cancel")
+def cancel_task(task_id: int):
+    return update_task(task_id, TaskUpdate(status=TaskStatus.CANCELLED))
 
         
 if __name__ == "__main__":
