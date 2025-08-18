@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException
+from idlelib.query import Query
+from pydoc import describe
+
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 # diğer dosyalardan
@@ -148,3 +151,27 @@ def assign_book_to_user(user_id:int, book_id:int, session: Session = Depends(get
     session.refresh(book)
 
     return {"message": f"Book '{book.title}' assigned to user '{user.name}'"}
+
+
+
+
+@app.get("/search")
+def search_books(title: str |None = Query(None, description="kitabın ismi"),
+                 author: str | None = Query(None, description="kitabın yazarı"),
+                 year:int | None = Query(None, description="kitabın yayım yılı"),
+                 session: Session = Depends(get_db)
+                 ):
+
+    query = session.query(models.Book)
+
+    if title:
+        query = query.filter(models.Book.title.ilike(f"%{title}%"))
+
+    if author:
+        query = query.filter(models.Book.author == author)
+
+    if year:
+        query = query.filter(models.Book.year == year)
+
+
+    return query.all()
