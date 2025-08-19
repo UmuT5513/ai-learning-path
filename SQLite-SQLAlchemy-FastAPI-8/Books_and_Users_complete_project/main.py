@@ -1,5 +1,3 @@
-from idlelib.query import Query
-from pydoc import describe
 
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
