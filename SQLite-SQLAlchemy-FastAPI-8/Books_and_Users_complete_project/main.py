@@ -1,18 +1,16 @@
-from fastapi import FastAPI, Depends, HTTPException
+
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 # diğer dosyalardan
 import models
 import schemas
-from database import engine, engine_users, SessionLocal, SessionLocal_users
+from database import engine, SessionLocal
 
 app = FastAPI(title="Books and Users API", version="1.0.0")
 
 # veri tabanı oluştur
 models.Base.metadata.create_all(bind=engine)
-
-# veri tabanı oluştur - users için
-models.Base.metadata.create_all(bind=engine_users)
 
 
 # DB oturumu alma
@@ -24,14 +22,6 @@ def get_db():
         db.close()
 
 
-# users için DB oturumu alma
-def get_db_user():
-    db_user = SessionLocal_users()
-    try:
-        yield db_user
-    finally:
-        db_user.close()
-
 
 @app.get("/")
 def root():
@@ -40,36 +30,36 @@ def root():
 
 # kitap ekleme - post method
 @app.post("/books", response_model=schemas.BookOut)
-def create_book(book: schemas.BookCreate, db: Session = Depends(get_db)):
+def create_book(book: schemas.BookCreate, session: Session = Depends(get_db)):
     try:
         db_book = models.Book(**book.model_dump())
-        db.add(db_book)
-        db.commit()
-        db.refresh(db_book)
+        session.add(db_book)
+        session.commit()
+        session.refresh(db_book)
         return db_book
     except Exception as e:
-        db.rollback()
+        session.rollback()
         raise HTTPException(status_code=400, detail=f"Kitap eklenirken hata oluştu: {str(e)}")
 
 
 @app.post("/users", response_model=schemas.UserOut)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db_user)):
+def create_user(user: schemas.UserCreate, session: Session = Depends(get_db)):
     try:
         # Email benzersizlik kontrolü
-        existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+        existing_user = session.query(models.User).filter(models.User.email == user.email).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="Bu email adresi zaten kullanılıyor")
 
         db_user = models.User(**user.model_dump())
-        db.add(db_user)
-        db.commit()
-        db.refresh(db_user)
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
         return db_user
     except HTTPException:
-        db.rollback()
+        session.rollback()
         raise
     except Exception as e:
-        db.rollback()
+        session.rollback()
         raise HTTPException(status_code=400, detail=f"Kullanıcı eklenirken hata oluştu: {str(e)}")
 
 
@@ -84,17 +74,17 @@ def list_books(db: Session = Depends(get_db)):
 
 # user listeleme - DÜZELTİLDİ: get_db_user kullanılıyor
 @app.get("/users", response_model=list[schemas.UserOut])
-def list_users(db: Session = Depends(get_db_user)):  # get_db_user kullanılıyor
+def list_users(session: Session = Depends(get_db)):
     try:
-        return db.query(models.User).all()
+        return session.query(models.User).all()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Kullanıcılar listelenirken hata oluştu: {str(e)}")
 
 
 # Tek kitap getirme
 @app.get("/books/{book_id}", response_model=schemas.BookOut)
-def get_book(book_id: int, db: Session = Depends(get_db)):
-    book = db.query(models.Book).filter(models.Book.id == book_id).first()
+def get_book(book_id: int, session: Session = Depends(get_db)):
+    book = session.query(models.Book).filter(models.Book.id == book_id).first()
     if book is None:
         raise HTTPException(status_code=404, detail="Kitap bulunamadı")
     return book
@@ -102,16 +92,16 @@ def get_book(book_id: int, db: Session = Depends(get_db)):
 
 # Tek kullanıcı getirme
 @app.get("/users/{user_id}", response_model=schemas.UserOut)
-def get_user(user_id: int, db: Session = Depends(get_db_user)):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+def get_user(user_id: int, session: Session = Depends(get_db)):
+    user = session.query(models.User).filter(models.User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı")
     return user
 
 
 @app.patch("/books/{book_id}", response_model=schemas.BookOut)
-def update_book(book_id:int, updated_book: schemas.BookUpdate, db: Session = Depends(get_db)):
-    book = db.query(models.Book).filter(models.Book.id == book_id).first()
+def update_book(book_id:int, updated_book: schemas.BookUpdate, session: Session = Depends(get_db)):
+    book = session.query(models.Book).filter(models.Book.id == book_id).first()
 
     if book is None:
         raise HTTPException(status_code=404, detail="Kitap bulunamadı")
@@ -129,6 +119,57 @@ def update_book(book_id:int, updated_book: schemas.BookUpdate, db: Session = Dep
             else:
                 print("eklenen değer ile önceki değer aynı") # to do: buraya logger.info ekle
 
-    db.commit()
-    db.refresh(book)
+    session.commit()
+    session.refresh(book)
     return book
+
+@app.get("/users/{user_id}/books", response_model=list[schemas.BookOut])
+def get_user_books(user_id: int, session: Session = Depends(get_db)):
+    user = session.query(models.User).filter(models.User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="user bulunamadı!")
+
+    return user.books
+
+
+
+@app.post("/users/{user_id}/books/{book_id}")
+def assign_book_to_user(user_id:int, book_id:int, session: Session = Depends(get_db)):
+    user = session.query(models.User).filter(models.User.id == user_id).first()
+    book = session.query(models.Book).filter(models.Book.id == book_id).first()
+
+    if not user or not book:
+        raise HTTPException(status_code=404, detail="user or book not found!")
+
+
+    book.user_id = user_id
+
+    session.commit()
+    session.refresh(book)
+
+    return {"message": f"Book '{book.title}' assigned to user '{user.name}'"}
+
+
+
+
+@app.get("/search")
+def search_books(title: str |None = Query(None, description="kitabın ismi"),
+                 author: str | None = Query(None, description="kitabın yazarı"),
+                 year:int | None = Query(None, description="kitabın yayım yılı"),
+                 session: Session = Depends(get_db)
+                 ):
+
+    query = session.query(models.Book)
+
+    if title:
+        query = query.filter(models.Book.title.ilike(f"%{title}%"))
+
+    if author:
+        query = query.filter(models.Book.author == author)
+
+    if year:
+        query = query.filter(models.Book.year == year)
+
+
+    return query.all()

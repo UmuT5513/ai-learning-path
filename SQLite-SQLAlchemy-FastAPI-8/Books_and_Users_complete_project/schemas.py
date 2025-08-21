@@ -1,4 +1,3 @@
-
 from pydantic import BaseModel, Field
 
 class BookBase(BaseModel):
@@ -20,9 +19,15 @@ class UserCreate(UserBase):
 class BookOut(BookBase):
     id: int
 
+    class Config:
+        orm_mode = True
+
 
 class UserOut(UserBase):
     id: int
+
+    class Config:
+        orm_mode = True
 
 
 class BookUpdate(BaseModel):
