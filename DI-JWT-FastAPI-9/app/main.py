@@ -46,6 +46,9 @@ def get_log(log_id:int, session: Session = Depends(get_db))-> schemas.LogOut:
 
     log = session.query(models.Log).filter(models.Log.id == log_id).first()
     
+    if not log:
+        raise HTTPException(status_code=404, detail="Log not found")
+    
     return log
 
 
@@ -66,41 +69,47 @@ def ping(session: Session = Depends(get_db)):
 
 # USER BÖLÜMÜ - API lar ve fonsiyonlar içerir
 # 2 bölümden oluşur. 1: create_user gibi db ile user işlemleri. 2: doğrulama işlemleri
+def fake_hash_password(password: str):
+    return password[::-1]
 
 @app.post("/user", response_model=schemas.UserOut)
 def create_user(user:schemas.UserCreate, session: Session = Depends(get_db)):
-    db_user = models.User(**user, password=fake_hash_password(user.hashed_password)) # id yi otomatik olarak veriyor
+    db_user = models.User(**user.model_dump(exclude={"password"}), hashed_password=fake_hash_password(user.password))
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
     return db_user
 
 
-def fake_hash_password(password: str):
-    return "fakehashed" + password
+
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 
-def get_user( username: str, session: Session = Depends(get_db)):
-    db = session.query(models.User).all()
-    if username in db:
-        user_dict = db[username]
-        return schemas.UserInDB(**user_dict)
+def get_user_by_username( username: str, session:Session)->schemas.UserOut:
+    db_user = session.query(models.User).filter(models.User.username == username).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="db de user bulunamadı")
+    
+    return schemas.UserOut(username=db_user.username, 
+                            email=db_user.email, 
+                            full_name=db_user.full_name, 
+                            hashed_password=db_user.hashed_password, 
+                            disabled=db_user.disabled)
     
 # En güvensiz YÖNTEM 1:
-def fake_decode_token(token):
+def fake_decode_token(token, session:Session) -> schemas.UserOut:
     # This doesn't provide any security at all
     # Check the next version
-    user = get_user(username=token, session=Depends(get_db))
+    user = get_user_by_username(username=token, session=session)
     return user
 
 # YÖNTEM 2:
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)])->schemas.UserOut:
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Session)->schemas.UserOut:
     # dikkat! token i Depends ile alıyoruz. Depends str döndürür.
-    user = fake_decode_token(token)
+    user = fake_decode_token(token=token, session=session)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -123,9 +132,15 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], sess
     user = session.query(models.User).filter(models.User.username == form_data.username).first()
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    user = schemas.UserInDB(**user)
-    hashed_password = fake_hash_password(form_data.password)
-    if not hashed_password == user.hashed_password:
+
+    user = schemas.UserInDB(hashed_password=user.hashed_password,
+                            username=user.username, 
+                            email=user.email, 
+                            full_name=user.full_name, 
+                            disabled=user.disabled
+                            )
+    hashed_password_form = form_data.password
+    if not hashed_password_form == user.hashed_password:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     return {"access_token": user.username, "token_type": "bearer"}
