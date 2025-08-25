@@ -5,6 +5,16 @@ import models
 from base import engine, SessionLocal, DATABASE_URL
 import schemas
 from sqlalchemy.orm.session import Session
+import jwt
+from jwt.exceptions import InvalidTokenError
+from datetime import datetime, timedelta, timezone # create_acces_token de kullanıldı
+from dotenv import load_dotenv
+from config import settings # .env dosyasından verileri almak için
+from passlib.context import CryptContext # pwd_context
+
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 
 auto_id = 1
@@ -68,13 +78,26 @@ def ping(session: Session = Depends(get_db)):
     return {"message":"pong"}
 
 # USER BÖLÜMÜ - API lar ve fonsiyonlar içerir
-# 2 bölümden oluşur. 1: create_user gibi db ile user işlemleri. 2: doğrulama işlemleri
-def fake_hash_password(password: str):
-    return password[::-1]
 
-@app.post("/user", response_model=schemas.UserOut)
-def create_user(user:schemas.UserCreate, session: Session = Depends(get_db)):
-    db_user = models.User(**user.model_dump(exclude={"password"}), hashed_password=fake_hash_password(user.password))
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+
+
+
+def create_user(username:str,email:str,full_name:str,password:str, session: Session):
+    db_user = models.User(username=username, email=email, full_name=full_name, hashed_password=get_password_hash(password))
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
@@ -84,32 +107,79 @@ def create_user(user:schemas.UserCreate, session: Session = Depends(get_db)):
 
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
-
-def get_user_by_username( username: str, session:Session)->schemas.UserOut:
+def get_user_by_username(username: str, session:Session)->schemas.UserOut:
     db_user = session.query(models.User).filter(models.User.username == username).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="db de user bulunamadı")
     
-    return schemas.UserOut(username=db_user.username, 
-                            email=db_user.email, 
-                            full_name=db_user.full_name, 
-                            hashed_password=db_user.hashed_password, 
-                            disabled=db_user.disabled)
+    return schemas.UserOut(id=db_user.id, 
+                           username=db_user.username, 
+                           email=db_user.email, 
+                           full_name=db_user.full_name, 
+                           hashed_password=db_user.hashed_password, 
+                           disabled=db_user.disabled)
     
-# En güvensiz YÖNTEM 1:
+def check_user_exists(username: str, session: Session) -> bool:
+    db_user = session.query(models.User).filter(models.User.username == username).first()
+    return db_user is not None
+
+@app.post("/register")
+def register(username:str, email:str, full_name:str,password:str, session:Session = Depends(get_db)):
+    db_user = check_user_exists(username=username, session=session)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Kullanıcı zaten var")
+    user = create_user(username=username, email=email, full_name=full_name, password=password, session=session)
+    return {"msg": "User created", "username": user.username}
+
+def authenticate_user(session:Session, username: str, password: str):
+    user = get_user_by_username(username, session)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+
+# En güvensiz YÖNTEM:
 def fake_decode_token(token, session:Session) -> schemas.UserOut:
     # This doesn't provide any security at all
-    # Check the next version
+    # Check the next version --> JWT ile Auth2
     user = get_user_by_username(username=token, session=session)
     return user
 
-# YÖNTEM 2:
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Session)->schemas.UserOut:
+# güvenli yöntem:
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+
+
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Session = Depends(get_db))->schemas.UserOut:
     # dikkat! token i Depends ile alıyoruz. Depends str döndürür.
-    user = fake_decode_token(token=token, session=session)
+
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = schemas.TokenData(username=username)
+    except InvalidTokenError:
+        raise credentials_exception
+    
+    user = get_user_by_username(username=token_data.username, session=session)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -127,32 +197,37 @@ async def get_current_active_user(
     return current_user
 
 
+
+
+
+# JWT access token ile dogrulama
 @app.post("/token")
-async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: Session = Depends(get_db)):
-    user = session.query(models.User).filter(models.User.username == form_data.username).first()
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: Session = Depends(get_db)) -> schemas.Token:
+    user = authenticate_user(session, form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-
-    user = schemas.UserInDB(hashed_password=user.hashed_password,
-                            username=user.username, 
-                            email=user.email, 
-                            full_name=user.full_name, 
-                            disabled=user.disabled
-                            )
-    hashed_password_form = form_data.password
-    if not hashed_password_form == user.hashed_password:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-
-    return {"access_token": user.username, "token_type": "bearer"}
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return schemas.Token(access_token=access_token, token_type="bearer")
 
 
 
-@app.get("/users/me")
+@app.get("/users/me", response_model=schemas.UserOut)
 async def read_users_me(
-    current_user: Annotated[schemas.UserOut, Depends(get_current_active_user)],
-):
+    current_user: Annotated[schemas.UserOut, Depends(get_current_active_user)]):
     return current_user
 
+
+@app.get("/protected")
+def protected_route(current_user: dict = Depends(get_current_user)):
+    return {"msg": "You are inside protected area!", "username": current_user.username}
 
 
 
