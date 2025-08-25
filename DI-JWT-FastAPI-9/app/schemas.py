@@ -20,7 +20,7 @@ class LogOut(LogBase):
     id:int
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Pydantic V2 için orm_mode yerine from_attributes
 
 
 # User schemas
@@ -34,10 +34,22 @@ class User(BaseModel):
 class UserInDB(User):
     hashed_password: str
 
-class UserCreate(User): # bununla user oluşturacağız, UserInDB ile db ye kaydedeceğiz.
+class UserCreate(User): # bununla user oluşturacağız, UserInDB ile db ye kaydedeceğiz. böyle yapmamızın sebebi password u hashlenmiş olarak kaydetmek
     password: str
 
 class UserOut(UserInDB):
     id:int
+
+    class Config:
+        from_attributes = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None
 
 
