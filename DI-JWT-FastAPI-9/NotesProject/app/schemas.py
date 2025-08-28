@@ -1,36 +1,42 @@
 from pydantic import BaseModel, Field
 import models
 
-class User(BaseModel):
+class UserBase(BaseModel):
 
-    id:str
     username:str
-    #password:str
     role:models.Role
+
+
+class UserCreate(UserBase):
+
+    password:str
 
     
 
 
-class UserOut(User):
+class UserOut(UserBase):
+
+    id:int
 
     class Config:
         from_attributes = True
     
 
 
-class Note(BaseModel):
+class NoteBase(BaseModel):
 
     title:str
     content:str
 
 
-class NoteCreate(Note):
+class NoteCreate(NoteBase):
     pass
 
 
-class NoteOut(Note):
+class NoteOut(NoteBase):
     id:int
     owner_id:int
+    
 
     class Config:
         from_attributes = True
