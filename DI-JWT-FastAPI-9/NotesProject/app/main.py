@@ -17,6 +17,48 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 app = FastAPI()
 
+# custom open api
+from fastapi.openapi.utils import get_openapi
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    openapi_schema = get_openapi(title="Notes API", version="1.0.0", description="Not Yönetim Servisi", routes=app.routes)
+
+    # tüm özelleştirmelere burada yapılır
+
+    # logoyu değiştir
+    openapi_schema["info"]["x-logo"] = {
+        "url": 'https://www.google.com/imgres?q=take%20notes%20logo&imgurl=https%3A%2F%2Fcdn-icons-png.flaticon.com%2F256%2F1355%2F1355663.png&imgrefurl=https%3A%2F%2Fwww.flaticon.com%2Ffree-icon%2Fnotes_1355663&docid=5tsg5UDz7exqIM&tbnid=X1cpUBGUV14xzM&vet=12ahUKEwjAjvbq_6-PAxV0YPEDHbCWJNoQM3oECBkQAA..i&w=256&h=256&hcb=2&ved=2ahUKEwjAjvbq_6-PAxV0YPEDHbCWJNoQM3oECBkQAA'
+    }
+
+    openapi_schema["paths"]["/token"]["post"]["requestBody"] = {
+        "content": {
+            "application/json": {
+                "example": {
+                    "username":"testuser12", 
+                    "password":"incognito"
+                }
+            }
+        }
+    }
+
+    openapi_schema["paths"]["/token"]["post"]["responses"] = {
+        "422": {
+            "description":"Validasyon(Doğrulama) Hatası",
+            "content":{
+                "application/json": {
+                    "example": {"detail":"Unauthorized\nÖnce kayıt ol, login işlemi yalnız token oluşturmak için. authorization için sağ üstten gir"}
+                }
+            }
+        }
+    }
+
+    app.openapi_schema = openapi_schema
+    return openapi_schema
+
+app.openapi = custom_openapi
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token") # authprization username ve password ile otomaikt olarak /token endpointi çağrılarak yapılır. yani login sonrası gelen tokeni copy paste yapmaya gerk yok.
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # şifre encyrptleme
@@ -121,7 +163,7 @@ def register(username:str, password:str, session: Session = Depends(get_db)):
 
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_db)):
-    '''inputlar db ile eşleşiyorsa token üret'''
+    '''inputlar db ile eşleşiyorsa token üret, db ye kaydet'''
     db_user = session.query(models.User).filter(models.User.username == form_data.username).first()
 
     if not db_user or not verify_password(form_data.password, db_user.hashed_password):
